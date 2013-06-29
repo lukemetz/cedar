@@ -1,13 +1,12 @@
-#import <Foundation/Foundation.h>
-#import <sstream>
+#include <sstream>
 
-#import "CedarStringifiers.h"
+#include "CedarStringifiers.h"
 
-namespace Cedar { namespace Matchers {
+namespace cedar { namespace matchers {
     struct BaseMessageBuilder {
         template<typename U>
-        static NSString * string_for_actual_value(const U & value) {
-            return Stringifiers::string_for(value);
+        static std::string string_for_actual_value(const U & value) {
+            return stringifiers::string_for(value);
         }
     };
 
@@ -26,12 +25,12 @@ namespace Cedar { namespace Matchers {
         // Allow default copy ctor.
 
         template<typename U>
-        NSString * failure_message_for(const U &) const;
+        std::string failure_message_for(const U &) const;
         template<typename U>
-        NSString * negative_failure_message_for(const U &) const;
+        std::string negative_failure_message_for(const U &) const;
 
     protected:
-        virtual NSString * failure_message_end() const = 0;
+        virtual std::string failure_message_end() const = 0;
     };
 
     template<typename MessageBuilder_>
@@ -40,16 +39,16 @@ namespace Cedar { namespace Matchers {
     Base<MessageBuilder_>::~Base() {}
 
     template<typename MessageBuilder_> template<typename U>
-    NSString * Base<MessageBuilder_>::failure_message_for(const U & value) const {
-        NSString * failureMessageEnd = this->failure_message_end();
-        NSString * actualValueString = MessageBuilder_::string_for_actual_value(value);
-        return [NSString stringWithFormat:@"Expected <%@> to %@", actualValueString, failureMessageEnd];
+    std::string Base<MessageBuilder_>::failure_message_for(const U & value) const {
+        std::string failureMessageEnd = this->failure_message_end();
+        std::string actualValueString = MessageBuilder_::string_for_actual_value(value);
+        return "Expected <" + actualValueString + "> to " + failureMessageEnd;
     }
 
     template<typename MessageBuilder_> template<typename U>
-    NSString * Base<MessageBuilder_>::negative_failure_message_for(const U & value) const {
-        NSString * failureMessageEnd = this->failure_message_end();
-        NSString * actualValueString = MessageBuilder_::string_for_actual_value(value);
-        return [NSString stringWithFormat:@"Expected <%@> to not %@", actualValueString, failureMessageEnd];
+    std::string Base<MessageBuilder_>::negative_failure_message_for(const U & value) const {
+        std::string failureMessageEnd = this->failure_message_end();
+        std::string actualValueString = MessageBuilder_::string_for_actual_value(value);
+        return "Expected <" + actualValueString + "> to not " + failureMessageEnd;
     }
 }}

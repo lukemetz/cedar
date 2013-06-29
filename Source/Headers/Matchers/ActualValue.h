@@ -1,12 +1,13 @@
-#import <Foundation/Foundation.h>
-#import <iostream>
+#pragma once
+#include <iostream>
 
-#import "StringifiersBase.h"
-#import "CDRSpecFailure.h"
+#include "Stringifiers/StringifiersBase.h"
+//#include "CDRSpecFailure.h"
+#include "SpecException.h"
 
-namespace Cedar { namespace Matchers {
+namespace cedar { namespace matchers {
 
-    void CDR_fail(const char *fileName, int lineNumber, NSString * reason);
+    void CDR_fail(const char *fileName, int lineNumber, std::string reason);
 
     template<typename T> class ActualValue;
 
@@ -22,7 +23,6 @@ namespace Cedar { namespace Matchers {
     public:
         explicit ActualValueMatchProxy(const ActualValue<T> &, bool negate = false);
         ActualValueMatchProxy();
-
         template<typename MatcherType> void operator()(const MatcherType &) const;
         ActualValueMatchProxy<T> negate() const;
 
@@ -77,7 +77,7 @@ namespace Cedar { namespace Matchers {
     };
 
     template<typename T>
-    ActualValue<T>::ActualValue(const char *fileName, int lineNumber, const T & value) : fileName_(fileName), lineNumber_(lineNumber), value_(value), to(*this), to_not(*this, true) {
+    ActualValue<T>::ActualValue(const char *fileName, int lineNumber, const T & value) : to(*this), to_not(*this, true), value_(value), fileName_(fileName), lineNumber_(lineNumber) {
     }
 
     template<typename T>
@@ -103,15 +103,14 @@ namespace Cedar { namespace Matchers {
         return ActualValue<T>(fileName, lineNumber, actualValue);
     }
 
-    inline void CDR_fail(const char *fileName, int lineNumber, NSString * reason) {
-        [[CDRSpecFailure specFailureWithReason:reason
-                                      fileName:[NSString stringWithUTF8String:fileName]
-                                    lineNumber:lineNumber] raise];
+    inline void CDR_fail(const char *fileName, int lineNumber, std::string reason) {
+        auto exception = cedar::SpecException(reason, fileName, lineNumber);
+        throw exception;
     }
 
-}}
-
+}};
+#define CEDAR_MATCHERS_COMPATIBILITY_MODE
 #ifndef CEDAR_MATCHERS_COMPATIBILITY_MODE
-    #define expect(x) CDR_expect(__FILE__, __LINE__, (x))
-    #define fail(x) CDR_fail(__FILE__, __LINE__, (x))
+    #define expect(x) cedar::matchers::CDR_expect(__FILE__, __LINE__, (x))
+    #define fail(x) cedar::matchers::CDR_fail(__FILE__, __LINE__, (x))
 #endif

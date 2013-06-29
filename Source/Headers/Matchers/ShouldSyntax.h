@@ -1,6 +1,7 @@
-#import "ActualValue.h"
+#pragma once
+#include "ActualValue.h"
 
-namespace Cedar { namespace Matchers {
+namespace cedar { namespace matchers {
 
     struct ActualValueMarker {
         const char *fileName;
@@ -25,6 +26,6 @@ namespace Cedar { namespace Matchers {
 }}
 
 #ifndef CEDAR_MATCHERS_DISALLOW_SHOULD
-    #define should ,(ActualValueMarker){__FILE__, __LINE__},false,
-    #define should_not ,(ActualValueMarker){__FILE__, __LINE__},true,
+    #define should ,(cedar::matchers::ActualValueMarker){__FILE__, __LINE__},false,
+    #define should_not ,(cedar::matchers::ActualValueMarker){__FILE__, __LINE__},true,
 #endif

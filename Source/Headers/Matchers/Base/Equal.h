@@ -1,7 +1,7 @@
-#import <Foundation/Foundation.h>
-#import "Base.h"
+#pragma once
+#include "Base.h"
 
-namespace Cedar { namespace Matchers {
+namespace cedar { namespace matchers {
 
     template<typename T>
     class Equal : public Base<> {
@@ -17,7 +17,7 @@ namespace Cedar { namespace Matchers {
         bool matches(const U &) const;
 
     protected:
-        virtual NSString * failure_message_end() const;
+        virtual std::string failure_message_end() const;
 
     private:
         const T & expectedValue_;
@@ -38,14 +38,14 @@ namespace Cedar { namespace Matchers {
     }
 
     template<typename T>
-    /*virtual*/ NSString * Equal<T>::failure_message_end() const {
-        NSString * expectedValueString = Stringifiers::string_for(expectedValue_);
-        return [NSString stringWithFormat:@"equal <%@>", expectedValueString];
+    /*virtual*/ std::string Equal<T>::failure_message_end() const {
+        std::string expectedValueString = stringifiers::string_for(expectedValue_);
+        return "equal " + expectedValueString;
     }
 
     template<typename T> template<typename U>
     bool Equal<T>::matches(const U & actualValue) const {
-        return Comparators::compare_equal(actualValue, expectedValue_);
+        return comparators::compare_equal(actualValue, expectedValue_);
     }
 
 #pragma mark equality operators

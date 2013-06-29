@@ -1,37 +1,25 @@
-#import <Foundation/Foundation.h>
+#pragma once
 #include <sstream>
 
-namespace Cedar { namespace Matchers { namespace Stringifiers {
-    NSString * object_description_for(const void *objectValue);
+namespace cedar { namespace matchers { namespace stringifiers {
+    std::string object_description_for(const void *objectValue);
 
     template<typename U>
-    NSString * string_for(const U & value) {
-        if (0 == strncmp(@encode(U), "@", 1)) {
-            return object_description_for(&value);
-        } else {
-            std::stringstream temp;
-            temp << value;
-            return [NSString stringWithCString:temp.str().c_str() encoding:NSUTF8StringEncoding];
-        }
+    std::string string_for(const U & value) {
+        std::stringstream output;
+        output << value;
+        return output.str().c_str();
     }
-
-    inline NSString * string_for(const char value) {
+    
+    inline std::string string_for(const char value) {
         return string_for(static_cast<const int>(value));
     }
 
-    inline NSString * string_for(const Class & value) {
-        return NSStringFromClass(value);
+    inline std::string string_for(const bool value) {
+        return value ? "true" : "false";
     }
 
-    inline NSString * string_for(const BOOL value) {
-        return value ? @"YES" : @"NO";
-    }
-
-    inline NSString * string_for(NSNumber * const value) {
-        return string_for([value floatValue]);
-    }
-
-    inline NSString * string_for(const NSDecimal value) {
-        return NSDecimalString(&value, [NSLocale currentLocale]);
+    inline std::string string_for(const std::nullptr_t ptr) {
+      return "0x0";
     }
 }}}
