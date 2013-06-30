@@ -40,7 +40,7 @@ namespace cedar { namespace matchers {
     template<typename T>
     /*virtual*/ std::string Equal<T>::failure_message_end() const {
         std::string expectedValueString = stringifiers::string_for(expectedValue_);
-        return "equal " + expectedValueString;
+        return "equal <" + expectedValueString + ">";
     }
 
     template<typename T> template<typename U>
