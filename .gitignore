@@ -1,7 +1,4 @@
-*.mode1v3
-*.pbxuser
-*.xcworkspace
-xcuserdata
-build
+cmake_instal.cmake
+CMakeFiles
+CMakeCache.txt
 .DS_Store
-.idea
