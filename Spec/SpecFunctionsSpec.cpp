@@ -60,16 +60,17 @@ SPEC_BEGIN(SpecFunctionsSpec)
     });
   });
 
-  /*describe("SPEC_BEGIN/SPEC_END", []{
+  describe("SPEC_BEGIN/SPEC_END", []{
     it("should create a SpecContainer the token equal to the name", []{
-      auto oldCurrent = currentSpec;
-      currentSpec = std::make_shared<Spec>("New Base", nullptr);
+      auto oldRoot = rootSpec;
+      rootSpec = std::make_shared<Spec>("New Base", []{});
+
       SPEC_BEGIN(macro);
       SPEC_END;
 
       &macro should_not equal(nullptr);
 
-      currentSpec = oldCurrent;
+      rootSpec = oldRoot;
     });
-  }); */
+  });
 SPEC_END
